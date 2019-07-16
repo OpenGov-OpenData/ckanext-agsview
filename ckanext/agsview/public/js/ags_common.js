@@ -74,7 +74,7 @@ var Date_names = [];
       var value = properties[key];
       if (Date_names.includes(key)){
           value = new Date(value);
-          newvalue = value.getMonth()+'/'+value.getDate()+'/'+value.getFullYear();
+          newvalue = value.toLocaleString()+',  EST';
           value = newvalue;
         }
       return '<span><strong>' + key + ':</strong> ' + value + '</span>';
