@@ -1,3 +1,4 @@
+var Date_names = [];
 (function (ckan, jQuery) {
 
   /* Returns a Leaflet map to use on the different spatial widgets
@@ -71,6 +72,11 @@
     var keys = Object.keys(properties);
     return '<div>' + keys.map(function (key) {
       var value = properties[key];
+      if (Date_names.includes(key)){
+          value = new Date(value);
+          newvalue = value.getMonth()+'/'+value.getDate()+'/'+value.getFullYear();
+          value = newvalue;
+        }
       return '<span><strong>' + key + ':</strong> ' + value + '</span>';
     }).join('<br/>') + '</div>';
   }
