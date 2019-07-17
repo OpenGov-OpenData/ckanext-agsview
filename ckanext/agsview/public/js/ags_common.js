@@ -1,4 +1,4 @@
-var Date_names = [];
+var date_fields = [];
 (function (ckan, jQuery) {
 
   /* Returns a Leaflet map to use on the different spatial widgets
@@ -72,9 +72,9 @@ var Date_names = [];
     var keys = Object.keys(properties);
     return '<div>' + keys.map(function (key) {
       var value = properties[key];
-      if (Date_names.includes(key)){
+      if (date_fields.includes(key)){
           value = new Date(value);
-          newvalue = value.toLocaleString()+',  EST';
+          newvalue = value.toLocaleString('en-US', { timeZone: 'UTC'}) + '  ,GMT';
           value = newvalue;
         }
       return '<span><strong>' + key + ':</strong> ' + value + '</span>';
