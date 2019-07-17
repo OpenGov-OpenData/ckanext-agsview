@@ -88,7 +88,7 @@ ckan.module('ags_fs_view', function (jQuery, _) {
       this.layer.metadata(function(error, metadata){
           Object.keys(metadata.fields).forEach(function(key) {
             if (metadata.fields[key].type == 'esriFieldTypeDate') {
-              Date_names.push(metadata.fields[key].name)
+              date_fields.push(metadata.fields[key].name)
             }
           });
         if (error) {
