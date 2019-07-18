@@ -74,7 +74,7 @@ var date_fields = [];
       var value = properties[key];
       if (date_fields.includes(key)){
           value = new Date(value);
-          newvalue = value.toLocaleString('en-US', { timeZone: 'UTC'}) + '  ,GMT';
+          newvalue = value.toLocaleString('default', { timeZoneName: 'short' });
           value = newvalue;
         }
       return '<span><strong>' + key + ':</strong> ' + value + '</span>';
