@@ -86,14 +86,14 @@ ckan.module('ags_fs_view', function (jQuery, _) {
     getMetaData: function () {
       var self = this;
       this.layer.metadata(function(error, metadata){
+        if (error) {
+          throw error;
+        }
         Object.keys(metadata.fields).forEach(function(key) {
           if (metadata.fields[key].type == 'esriFieldTypeDate') {
             date_fields.push(metadata.fields[key].name)
           }
         });
-        if (error) {
-          throw error;
-        }
         var extent = metadata.extent || metadata.initialExtent || metadata.fullExtent;
         var wkid = extent.spatialReference.latestWkid || extent.spatialReference.wkid;
         function after (d) {
