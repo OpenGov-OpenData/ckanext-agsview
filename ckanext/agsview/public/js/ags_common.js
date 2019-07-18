@@ -72,11 +72,10 @@ var date_fields = [];
     var keys = Object.keys(properties);
     return '<div>' + keys.map(function (key) {
       var value = properties[key];
-      if (date_fields.includes(key)){
-          value = new Date(value);
-          newvalue = value.toLocaleString('default', { timeZoneName: 'short' });
-          value = newvalue;
-        }
+      if (date_fields.includes(key)) {
+          date_value = new Date(value);
+          value = date_value.toLocaleString('default', { timeZoneName: 'short' });
+      }
       return '<span><strong>' + key + ':</strong> ' + value + '</span>';
     }).join('<br/>') + '</div>';
   }
