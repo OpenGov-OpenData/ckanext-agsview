@@ -74,7 +74,8 @@ var date_fields = [];
       var value = properties[key];
       if (date_fields.includes(key)) {
           date_value = new Date(value);
-          value = date_value.toLocaleString('default', { timeZoneName: 'short' });
+          value = date_value.toLocaleString('default', {  year: 'numeric', month: 'numeric', day: 'numeric',
+            hour:'2-digit',minute:'2-digit',second:'2-digit', timeZoneName:'short' });
       }
       return '<span><strong>' + key + ':</strong> ' + value + '</span>';
     }).join('<br/>') + '</div>';
