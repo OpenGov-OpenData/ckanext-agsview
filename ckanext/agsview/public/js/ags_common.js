@@ -72,7 +72,7 @@ var date_fields = [];
     var keys = Object.keys(properties);
     return '<div>' + keys.map(function (key) {
       var value = properties[key];
-      if (date_fields.includes(key)) {
+      if (date_fields.indexOf(key) > -1) {
         date_value = new Date(value);
         value = date_value.toLocaleString('default', {
           year: 'numeric', month: 'numeric', day: 'numeric',
