@@ -74,7 +74,7 @@ var date_fields = [];
       var value = properties[key];
       if (date_fields.indexOf(key) > -1) {
         date_value = new Date(value);
-        value = date_value.toLocaleString('default', {
+        value = date_value.toLocaleString(undefined, {
           year: 'numeric', month: 'numeric', day: 'numeric',
           hour: '2-digit', minute: '2-digit', second: '2-digit',
           timeZoneName:'short'
