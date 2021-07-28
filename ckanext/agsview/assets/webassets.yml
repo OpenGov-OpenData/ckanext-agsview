@@ -13,7 +13,6 @@ shared_js:
 
 shared_css:
   output: ckanext-agsview/%(version)s_shared.css
-  filters: cssrewrite
   contents:
     - css/ags_view.css
     - css/vendor/leaflet.css
