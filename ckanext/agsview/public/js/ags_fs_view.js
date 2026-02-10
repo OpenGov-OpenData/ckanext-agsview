@@ -4,6 +4,7 @@ ckan.module('ags_fs_view', function (jQuery, _) {
     options: {
       table: '<div class="table-container"><table class="table table-striped table-bordered table-condensed"><tbody>{body}</tbody></table></div>',
       row:'<tr><th>{key}</th><td>{value}</td></tr>',
+      map_label: 'Map',
       style: {
         opacity: 0.7,
         fillOpacity: 0.1,
@@ -19,7 +20,7 @@ ckan.module('ags_fs_view', function (jQuery, _) {
       var self = this;
 
       self.el.empty();
-      self.el.append($("<div></div>").attr("id","map"));
+      self.el.append($("<div></div>").attr("id", "map").attr("role", "img").attr("aria-label", this.options.map_label));
       self.map = ckan.agsCreatemap('map', this.options);
 
       // hack to make leaflet use a particular location to look for images
