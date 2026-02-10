@@ -66,22 +66,94 @@ var date_fields = [];
       map.addLayer(baseLayer);
     }
 
-    // Close popup on Escape regardless of focus
+    // Make popup content focusable and trap focus inside popup until closed
     var escapeKeyHandler;
-    map.on('popupopen', function() {
-      escapeKeyHandler = function(e) {
-        if (e.keyCode === 27 && map._popup && map._popup.options.closeOnEscapeKey !== false) {
+    var focusTrapKeydownHandler;
+    var focusTrapFocusinHandler;
+    map.on('popupopen', function(e) {
+      var popup = e.popup;
+      if (popup && popup.getElement) {
+        var container = popup.getElement();
+        if (container) {
+          container.setAttribute('tabindex', '-1');
+          // Make content focusable so VoiceOver reads the text
+          var contentNode = container.querySelector && container.querySelector('.leaflet-popup-content');
+          var focusTarget = container;
+          if (contentNode) {
+            contentNode.setAttribute('tabindex', '0');
+            focusTarget = contentNode;
+          }
+          setTimeout(function() {
+            focusTarget.focus();
+          }, 0);
+
+          // Keep focus inside popup: wrap Tab on last element and Shift+Tab on first
+          focusTrapKeydownHandler = function(ev) {
+            if (ev.keyCode !== 9 || !map._popup || !map._popup.getElement) return;
+            var c = map._popup.getElement();
+            var content = c.querySelector && c.querySelector('.leaflet-popup-content');
+            var closeBtn = c.querySelector && c.querySelector('.leaflet-popup-close-button');
+            var first = content || closeBtn;
+            var last = closeBtn || content;
+            if (!first || !last) return;
+            var active = document.activeElement;
+            if (!c.contains(active)) return;
+            if (ev.shiftKey) {
+              if (active === first) {
+                ev.preventDefault();
+                last.focus();
+              }
+            } else {
+              if (active === last) {
+                ev.preventDefault();
+                first.focus();
+              }
+            }
+          };
+          document.addEventListener('keydown', focusTrapKeydownHandler);
+
+          // If focus leaves the popup (e.g. click outside), move it back
+          focusTrapFocusinHandler = function(ev) {
+            if (!map._popup || !map._popup.getElement) return;
+            var c = map._popup.getElement();
+            if (c.contains(ev.target)) return;
+            var first = c.querySelector && c.querySelector('.leaflet-popup-content');
+            if (first) {
+              setTimeout(function() { first.focus(); }, 0);
+            }
+          };
+          document.addEventListener('focusin', focusTrapFocusinHandler);
+        }
+      }
+      // Close popup on Escape
+      escapeKeyHandler = function(ev) {
+        if (ev.keyCode === 27 && map._popup && map._popup.options.closeOnEscapeKey !== false) {
           map.closePopup();
-          e.preventDefault();
-          e.stopPropagation();
+          ev.preventDefault();
+          ev.stopPropagation();
         }
       };
       document.addEventListener('keydown', escapeKeyHandler);
     });
-    map.on('popupclose', function() {
+    map.on('popupclose', function(e) {
       if (escapeKeyHandler) {
         document.removeEventListener('keydown', escapeKeyHandler);
         escapeKeyHandler = null;
+      }
+      if (focusTrapKeydownHandler) {
+        document.removeEventListener('keydown', focusTrapKeydownHandler);
+        focusTrapKeydownHandler = null;
+      }
+      if (focusTrapFocusinHandler) {
+        document.removeEventListener('focusin', focusTrapFocusinHandler);
+        focusTrapFocusinHandler = null;
+      }
+      // Return focus to the marker (or other source) that opened the popup
+      var source = e.popup && e.popup._source;
+      if (source && source._icon && typeof source._icon.focus === 'function') {
+        try {
+          source._icon.focus();
+        } catch (err) { /* ignore if focus fails */ }
       }
     });
     return map;
